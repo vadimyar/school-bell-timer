@@ -38,31 +38,31 @@
 
 ## 🛠️ Установка и настройка
 
-### 1. Клонируйте репозиторий
+### 1. Клонируй репозиторий
 
 ```bash
 git clone https://ваш-репозиторий/school-bell.git
 cd school-bell
 ```
 
-### 2. Создайте виртуальное окружение
+### 2. Создай виртуальное окружение
 
-> ⚠️ Современные дистрибутивы (Ubuntu 24.04+, Debian 12+) блокируют `pip` в системном Python. Используйте `venv`!
+> ⚠️ Современные дистрибутивы (Ubuntu 24.04+, Debian 12+) блокируют `pip` в системном Python. Используй `venv`!
 
 ```bash
 python3 -m venv bell-env
 source bell-env/bin/activate
 ```
 
-### 3. Установите зависимости
+### 3. Установи зависимости
 
 ```bash
 pip install PyQt5 matplotlib pygame
 ```
 
-### 4. Настройте расписание
+### 4. Настрой расписание
 
-Отредактируйте файл `schedule.txt` под своё расписание:
+Отредактируй файл `schedule.txt` под своё расписание:
 
 ```txt
 # Понедельник
@@ -93,10 +93,10 @@ QT_QPA_PLATFORM=xcb python simple_timer.py
 ### Вариант 2: С иконкой в трее (требует GNOME AppIndicator)
 
 ```bash
-# Установите поддержку трея (GNOME)
+# Установи поддержку трея (GNOME)
 sudo apt install gnome-shell-extension-appindicator
 
-# Перезапустите оболочку: Alt+F2 → r
+# Перезапусти оболочку: Alt+F2 → r
 QT_QPA_PLATFORM=xcb python timer.py
 ```
 ---
@@ -105,7 +105,7 @@ QT_QPA_PLATFORM=xcb python timer.py
 
 Приложение воспроизводит:
 - `bell.wav` — при начале **любого нового периода** (можно заменить на свой).
-- Чтобы использовать разные звуки для урока/перемены — измените код в `simple_timer.py`.
+- Чтобы использовать разные звуки для урока/перемены — измени код в `simple_timer.py`.
 
 Формат: **WAV (16-bit PCM)**. MP3 не поддерживается без дополнительных библиотек.
 
@@ -113,13 +113,13 @@ QT_QPA_PLATFORM=xcb python timer.py
 
 ## 🖥️ Ярлык в меню приложений
 
-### 1. Сделайте скрипт исполняемым
+### 1. Сделай скрипт исполняемым
 
 ```bash
 chmod +x run-bell.sh
 ```
 
-### 2. Установите `.desktop`-файл
+### 2. Установи `.desktop`-файл
 
 🚀 Сделай всё по порядку:
 
@@ -128,7 +128,11 @@ chmod +x run-bell.sh
 ## 1️⃣ `.desktop`-файл — для запуска из меню приложений
 
 Создай файл **`school-bell.desktop`** в корне проекта:
-
+```bash
+# Создай файл school-bell.desktop в корне проекта:
+nano school-bell.desktop
+```
+Вставь содержимое файла (учти, это для KDE):
 ```ini
 [Desktop Entry]
 Categories=Education;Utility;
@@ -151,17 +155,17 @@ X-KDE-SubstituteUID=false
 X-KDE-Username=
 ```
 
-> 🔁 Замени `/home/user/Programs/school-bell-timer/` на реальный путь (узнать: `pwd` в папке проекта).
+> 🔁 Замени `/home/user/Programs/school-bell-timer/` на свой реальный путь (узнать: `pwd` в папке проекта).
 
 ### Установка:
 ```bash
-# Сделать исполняемым
+# Сделай исполняемым
 chmod +x school-bell.desktop
 
-# Установить в меню приложений
+# Установи в меню приложений
 cp school-bell.desktop ~/.local/share/applications/
 
-# Обновить кэш
+# Обнови кэш
 update-desktop-database ~/.local/share/applications
 ```
 
@@ -180,7 +184,7 @@ cp school-bell.desktop ~/.config/autostart/
 
 ✅ Готово! Приложение будет запускаться автоматически при входе.
 
-> 💡 Совет: если не хотите, чтобы окно сразу открывалось, можно модифицировать `run-bell.sh`, чтобы он запускал `timer.py` (с треем), а не `simple_timer.py`.
+> 💡 Совет: если не хочешь, чтобы окно сразу открывалось, модифицируй `run-bell.sh`, чтобы он запускал `timer.py` (с треем), а не `simple_timer.py`.
 
 ---
 
@@ -229,7 +233,7 @@ AppDir:
       - pip install --target=${APPDIR}/usr/lib/python3.12/site-packages PyQt5 matplotlib pygame
 ```
 
-> ⚠️ Уточни версию Python (`python3.12` → ваша, например, `python3.10`).
+> ⚠️ Уточни версию Python (`python3.12` → твоя, например, `python3.10`).
 
 #### c) Собери AppImage
 
@@ -244,12 +248,11 @@ python -m python_appimage build appimage-builder.yml
 ```bash
 chmod +x SchoolBell-x86_64.AppImage
 ```
-
 И запускай где угодно! 🎉
 
 ---
 
-## 4️⃣ Альтернатива: Flatpak (если нужна интеграция в магазин)
+## 4️⃣ Альтернатива: Flatpak (вдруг тебе нужна интеграция в магазин)
 
 Flatpak сложнее, но даёт лучшую системную интеграцию.
 
@@ -278,7 +281,7 @@ Flatpak сложнее, но даёт лучшую системную интег
 
 ---
 
-## 📦 Бонус: обновлённый `run-bell.sh` для автозапуска (с треем!)
+## 📦 Бонус: обновлённый `run-bell.sh` для автозапуска (с треем, не тестировалось в KDE!)
 
 Если хочешь, чтобы при автозапуске **не открывалось окно**, а работала **иконка в трее**, измени `run-bell.sh`:
 
@@ -308,17 +311,26 @@ exec ./bell-env/bin/python timer.py  # ← не simple_timer.py!
 
 | Проблема | Решение |
 |---------|--------|
-| `ModuleNotFoundError: No module named 'PyQt5'` | Убедитесь, что вы в `venv`: `source bell-env/bin/activate` |
-| Окно не появляется в GNOME/Wayland | Запускайте с `QT_QPA_PLATFORM=xcb` |
-| Нет иконки в трее | Установите `gnome-shell-extension-appindicator` |
-| Звука нет | Проверьте наличие `bell.wav`, громкость, формат WAV |
-| `IndentationError` | Используйте только **пробелы** (4 на уровень), не табы |
+| `ModuleNotFoundError: No module named 'PyQt5'` | Убедись, что ты в `venv`: `source bell-env/bin/activate` |
+| Окно не появляется в GNOME/Wayland | Запускай с `QT_QPA_PLATFORM=xcb` |
+| Нет иконки в трее | Установи `gnome-shell-extension-appindicator` |
+| Звука нет | Проверь наличие `bell.wav`, громкость, формат WAV |
+| `IndentationError` | Используй только **пробелы** (4 на уровень), не табы |
 
 ---
 
 ## 📜 Лицензия
 
 Этот проект распространяется под лицензией **GNU General Public License v3.0** — см. файл [`LICENSE`](LICENSE).
+
+```
+Copyright (C) 2026 Vadimyar & Qwen3.7-Plus
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+```
 
 > ❤️ Свободное ПО для свободного образования!
 
@@ -328,6 +340,8 @@ exec ./bell-env/bin/python timer.py  # ← не simple_timer.py!
 
 Автор: **Vadimyar**  
 GitHub: [@vadimyar](https://github.com/vadimyar)
+
+**Особая благодарность: Qwen3-Max за помощь в написании кода!**
 
 ---
 
