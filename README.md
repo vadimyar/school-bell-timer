@@ -99,7 +99,6 @@ sudo apt install gnome-shell-extension-appindicator
 # Перезапустите оболочку: Alt+F2 → r
 QT_QPA_PLATFORM=xcb python timer.py
 ```
-
 ---
 
 ## 🔊 Звуки
@@ -122,20 +121,166 @@ chmod +x run-bell.sh
 
 ### 2. Установите `.desktop`-файл
 
-Отредактируйте пути в `school-bell.desktop` (замените `/home/user/...` на ваш `$HOME`), затем:
+🚀 Давай сделаем всё по порядку:
 
+---
+
+## 1️⃣ `.desktop`-файл — для запуска из меню приложений
+
+Создайте файл **`school-bell.desktop`** в корне проекта:
+
+```ini
+[Desktop Entry]
+Name=Звонилка для уроков
+Comment=Круговая диаграмма уроков и перемен с звуковым оповещением
+Exec=/home/user/Programs/Python_run/run-bell.sh
+Icon=/home/user/Programs/Python_run/bell.png
+Terminal=false
+Type=Application
+Categories=Education;Utility;
+StartupNotify=true
+Keywords=школа;звонок;урок;перемена;таймер;
+```
+
+> 🔁 Замените `/home/user/Programs/Python_run/` на ваш реальный путь (узнать: `pwd` в папке проекта).
+
+### Установка:
 ```bash
+# Сделать исполняемым
+chmod +x school-bell.desktop
+
+# Установить в меню приложений
 cp school-bell.desktop ~/.local/share/applications/
+
+# Обновить кэш
 update-desktop-database ~/.local/share/applications
 ```
 
-Теперь приложение появится в меню «Образование» или «Служебные».
+Теперь ищи «Звонилка для уроков» в меню!
 
-> 💡 Чтобы запускать из автозагрузки:  
-> ```bash
-> mkdir -p ~/.config/autostart
-> cp school-bell.desktop ~/.config/autostart/
-> ```
+---
+
+## 2️⃣ Автозапуск при входе в систему
+
+Просто скопируй тот же `.desktop`-файл в автозагрузку:
+
+```bash
+mkdir -p ~/.config/autostart
+cp school-bell.desktop ~/.config/autostart/
+```
+
+✅ Готово! Приложение будет запускаться автоматически при входе.
+
+> 💡 Совет: если не хотите, чтобы окно сразу открывалось, можно модифицировать `run-bell.sh`, чтобы он запускал `timer.py` (с треем), а не `simple_timer.py`.
+
+---
+
+## 3️⃣ Упаковка в AppImage (рекомендуется для Python-приложений)
+
+AppImage — это **один исполняемый файл**, который работает на любом Linux без установки.
+
+### Шаги:
+
+#### a) Установите `python-appimage`
+```bash
+pip install python-appimage
+```
+
+#### b) Создайте `appimage-builder.yml`
+
+В корне проекта создайте файл:
+
+```yaml
+version: 1
+AppDir:
+  path: ./AppDir
+  app_info:
+    id: ru.school.bell
+    name: SchoolBell
+    icon: bell
+    version: 1.0
+    exec: usr/bin/school-bell
+    exec_args: $@
+  runtime:
+    env:
+      PYTHONPATH: ${APPDIR}/usr/lib/python3.12/site-packages
+  files:
+    include:
+      - simple_timer.py
+      - schedule.txt
+      - bell.wav
+      - bell.png
+      - run-bell.sh
+  icons:
+    - bell.png
+  desktop:
+    file: school-bell.desktop
+  scripts:
+    before_freeze:
+      - pip install --target=${APPDIR}/usr/lib/python3.12/site-packages PyQt5 matplotlib pygame
+```
+
+> ⚠️ Уточните версию Python (`python3.12` → ваша, например, `python3.10`).
+
+#### c) Собери AppImage
+
+```bash
+python -m python_appimage build appimage-builder.yml
+```
+
+Через 5–10 минут получишь файл:  
+`SchoolBell-x86_64.AppiImage`
+
+Сделай его исполняемым:
+```bash
+chmod +x SchoolBell-x86_64.AppImage
+```
+
+И запускай где угодно! 🎉
+
+---
+
+## 4️⃣ Альтернатива: Flatpak (если нужна интеграция в магазин)
+
+Flatpak сложнее, но даёт лучшую системную интеграцию.
+
+### Кратко:
+
+1. Установи Flatpak:
+   ```bash
+   sudo apt install flatpak
+   flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+   ```
+
+2. Используй [flatpak-builder](https://docs.flatpak.org/en/latest/first-build.html) с манифестом.
+
+Но для **одного пользователя** AppImage проще и быстрее.
+
+---
+
+## 💡 Итог: что выбрать?
+
+| Цель | Решение |
+|------|--------|
+| Запуск из меню | `.desktop` + `~/.local/share/applications` |
+| Автозапуск | Копия в `~/.config/autostart/` |
+| Раздача другим | **AppImage** (один файл, без установки) |
+| Публикация в магазине | Flatpak (через Flathub) |
+
+---
+
+## 📦 Бонус: обновлённый `run-bell.sh` для автозапуска (с треем!)
+
+Если хочешь, чтобы при автозапуске **не открывалось окно**, а работала **иконка в трее**, измени `run-bell.sh`:
+
+```bash
+#!/bin/bash
+cd "$(dirname "$0")"
+export QT_QPA_PLATFORM=xcb
+exec ./bell-env/bin/python timer.py  # ← не simple_timer.py!
+```
+
+И убедись, что в системе установлен `gnome-shell-extension-appindicator`.
 
 ---
 
