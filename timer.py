@@ -3,7 +3,7 @@ import sys
 import re
 from datetime import datetime
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-from PyQt5.QtCore import Qt, QTimer, QPoint
+from PyQt5.QtCore import Qt, QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
@@ -51,23 +51,18 @@ class SimpleBellWindow(QMainWindow):
 
     def __init__(self, schedule_file):
         super().__init__()
-        self.setWindowFlags(
-            Qt.FramelessWindowHint |
-            Qt.WindowStaysOnTopHint #| Qt.WindowTransparentForInput  # раскомментировать, если нужно "сквозное" окно
-        )
-        self.setAttribute(Qt.WA_TranslucentBackground)
-    
+        self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)  # ← ЭТА СТРОКА
+        # ... остальной код (setTitle, resize и т.д.)    
         self.setWindowTitle("- Звонилки -")
-        self.setFixedSize(300, 330)
-        
+        self.resize(300, 330)
         self.setStyleSheet("background-color: #2e2e2e;")
         self.schedule = parse_schedule(schedule_file)
 
         # Инициализация звука
         pygame.mixer.init()
         try:
-            self.lesson_sound = pygame.mixer.Sound("bell.wav")     # для начала урока
-            self.break_sound = pygame.mixer.Sound("bell2.wav")     # для начала перемены
+            self.lesson_sound = pygame.mixer.Sound("bell2.wav")     # для начала урока
+            self.break_sound = pygame.mixer.Sound("bell.wav")     # для начала перемены
         except pygame.error as e:
             print(f"Ошибка загрузки звука: {e}")
             self.lesson_sound = self.break_sound = None
@@ -75,14 +70,14 @@ class SimpleBellWindow(QMainWindow):
         self.last_interval_key = None
         self.last_interval_type = None  # 'lesson' или 'break'
 
-        self.canvas = FigureCanvas(Figure(facecolor='none'))
+        self.canvas = FigureCanvas(Figure(facecolor='#2e2e2e'))
         self.ax = self.canvas.figure.subplots()
-        self.ax.set_facecolor('none')
+        self.ax.set_facecolor('#2e2e2e')
 
-        container = QWidget()
-        container.setStyleSheet("background: transparent;")
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
+        container = QWidget()
+        container.setStyleSheet("background-color: #2e2e2e;")
         container.setLayout(layout)
         self.setCentralWidget(container)
 
@@ -90,27 +85,6 @@ class SimpleBellWindow(QMainWindow):
         self.timer.timeout.connect(self.update_chart)
         self.timer.start(1000)
         self.update_chart()
-
-        # Флаг для перетаскивания
-        self.dragging = False
-        self.drag_start_position = QPoint()
-
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.dragging = True
-            self.drag_start_position = event.globalPos() - self.frameGeometry().topLeft()
-            event.accept()
-
-    def mouseMoveEvent(self, event):
-        if self.dragging and event.buttons() & Qt.LeftButton:
-            new_pos = event.globalPos() - self.drag_start_position
-            self.move(new_pos)
-            event.accept()
-
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.dragging = False
-            event.accept()
 
     def update_chart(self):
         now = datetime.now()
