@@ -1,0 +1,19 @@
+[Desktop Entry]
+Categories=Education;Utility;
+Comment[ru_RU]=Круговая диаграмма уроков и перемен с звуковым оповещением
+Comment=Круговая диаграмма уроков и перемен с звуковым оповещением
+Exec=/home/user/Programs/school-bell-timer/run-bell.sh
+GenericName[ru_RU]=
+GenericName=
+Icon=/home/user/Programs/school-bell-timer/bell.png
+Keywords=школа;звонок;урок;перемена;таймер;
+MimeType=
+Name[ru_RU]=Звонилка для уроков
+Name=Звонилка для уроков
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

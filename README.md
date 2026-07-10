@@ -121,28 +121,37 @@ chmod +x run-bell.sh
 
 ### 2. Установите `.desktop`-файл
 
-🚀 Давай сделаем всё по порядку:
+🚀 Сделай всё по порядку:
 
 ---
 
 ## 1️⃣ `.desktop`-файл — для запуска из меню приложений
 
-Создайте файл **`school-bell.desktop`** в корне проекта:
+Создай файл **`school-bell.desktop`** в корне проекта:
 
 ```ini
 [Desktop Entry]
-Name=Звонилка для уроков
-Comment=Круговая диаграмма уроков и перемен с звуковым оповещением
-Exec=/home/user/Programs/Python_run/run-bell.sh
-Icon=/home/user/Programs/Python_run/bell.png
-Terminal=false
-Type=Application
 Categories=Education;Utility;
-StartupNotify=true
+Comment[ru_RU]=Круговая диаграмма уроков и перемен с звуковым оповещением
+Comment=Круговая диаграмма уроков и перемен с звуковым оповещением
+Exec=/home/user/Programs/school-bell-timer/run-bell.sh
+GenericName[ru_RU]=
+GenericName=
+Icon=/home/user/Programs/school-bell-timer/bell.png
 Keywords=школа;звонок;урок;перемена;таймер;
+MimeType=
+Name[ru_RU]=Звонилка для уроков
+Name=Звонилка для уроков
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=
 ```
 
-> 🔁 Замените `/home/user/Programs/Python_run/` на ваш реальный путь (узнать: `pwd` в папке проекта).
+> 🔁 Замени `/home/user/Programs/school-bell-timer/` на реальный путь (узнать: `pwd` в папке проекта).
 
 ### Установка:
 ```bash
@@ -181,14 +190,14 @@ AppImage — это **один исполняемый файл**, который
 
 ### Шаги:
 
-#### a) Установите `python-appimage`
+#### a) Установи `python-appimage`
 ```bash
 pip install python-appimage
 ```
 
-#### b) Создайте `appimage-builder.yml`
+#### b) Создай `appimage-builder.yml`
 
-В корне проекта создайте файл:
+В корне проекта создай файл:
 
 ```yaml
 version: 1
@@ -220,7 +229,7 @@ AppDir:
       - pip install --target=${APPDIR}/usr/lib/python3.12/site-packages PyQt5 matplotlib pygame
 ```
 
-> ⚠️ Уточните версию Python (`python3.12` → ваша, например, `python3.10`).
+> ⚠️ Уточни версию Python (`python3.12` → ваша, например, `python3.10`).
 
 #### c) Собери AppImage
 
@@ -254,7 +263,7 @@ Flatpak сложнее, но даёт лучшую системную интег
 
 2. Используй [flatpak-builder](https://docs.flatpak.org/en/latest/first-build.html) с манифестом.
 
-Но для **одного пользователя** AppImage проще и быстрее.
+Но для **одного пользователя** AppImage проще и быстрее!
 
 ---
 
